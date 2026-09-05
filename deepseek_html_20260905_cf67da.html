@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damn Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 20px; }
+        
+        /* Pencil jaisa grey color aur crop ke liye CSS */
+        .qr-img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover; /* Crop karne ke liye */
+            filter: grayscale(100%); /* Pencil grey color ke liye */
+            border: 2px solid #333;
+            background: white;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        input {
+            padding: 12px;
+            font-size: 18px;
+            width: 80%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            letter-spacing: 2px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover { background-color: #555; }
+        
+        #error-msg { color: red; font-weight: bold; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. Naam Change (Indus -> Damn) -->
+        <h1>Damn Payment</h1>
+
+        <!-- 2. Details Input (Sirf Digits) -->
+        <p>Enter 10-digit Number:</p>
+        <input type="text" id="user-details" maxlength="10" placeholder="Enter digits" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        
+        <!-- 3. QR Code (Yahan apna QR daalna hai: src="qr.png") -->
+        <img src="qr.png" class="qr-img" alt="Payment QR">
+        
+        <!-- 4. Payment Button -->
+        <button onclick="checkAndProceed()">PAY NOW</button>
+        
+        <p id="error-msg">Error! Sirf 10 digits daalein, warna page nahi khulega.</p>
+    </div>
+
+    <script>
+        // 5. Button Validation Logic
+        function checkAndProceed() {
+            var details = document.getElementById("user-details").value;
+            
+            // Sirf tabhi chalega jab user ne 10 exact digits daali ho
+            var digitRegex = /^\d{10}$/;
+
+            if (digitRegex.test(details)) {
+                // Correct details: Next page khulega
+                alert("Details Correct! Next page opening...");
+                
+                // Yahan apne Next Page ka link daalein (Abhi block hai)
+                // window.location.href = "next_page.html"; 
+                
+                // Agar next page ko test karna hai, toh upar wali line ka comment hata dein
+            } else {
+                // Galat details: Error dikhega, page block rahega
+                document.getElementById("error-msg").style.display = "block";
+                return false; 
+            }
+        }
+    </script>
+</body>
+</html>
