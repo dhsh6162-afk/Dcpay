@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMN | Professional Payment</title>
+    <style>
+        /* --- Professional Black & Orange Theme --- */
+        :root {
+            --bg: #0f0f0f; /* Deep Black */
+            --card: #1a1a1a; /* Dark Grey Card */
+            --txt: #ffffff;
+            --muted: #a0a0a0;
+            --accent: #ff6b00; /* Professional Orange */
+            --accent-light: #ff8c33;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg); color: var(--txt); overflow-x: hidden; }
+        .app { max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 80px; }
+
+        /* Header */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a2a; background: #000; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--accent); letter-spacing: 1px; }
+        .icons span { font-size: 20px; margin-left: 10px; cursor: pointer; filter: invert(1); }
+
+        /* Pages */
+        .page { display: none; padding: 20px; }
+        .page.active { display: block; }
+        
+        /* Cards & Inputs */
+        .card { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #333; }
+        label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 14px; margin-top: 10px; }
+        input { width: 100%; padding: 14px; background: #252525; border: 1px solid #444; border-radius: 8px; color: white; font-size: 16px; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: var(--accent); }
+
+        /* Buttons */
+        .btn-main { background: linear-gradient(45deg, var(--accent), var(--accent-light)); color: #000; font-weight: 800; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(255,107,0,0.3); }
+        .btn-main:hover { opacity: 0.9; }
+        .btn-back { background: transparent; color: var(--accent); text-align: center; width: 100%; border: none; margin-top: 15px; cursor: pointer; font-size: 16px; font-weight: bold; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 20px; background: #252525; border-radius: 8px; padding: 5px; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 6px; font-weight: bold; color: var(--muted); }
+        .tab.active { background: var(--accent); color: #000; }
+
+        /* QR Code (Black & Orange theme, but QR black for scanning) */
+        .qr-img {
+            width: 220px; height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 15px auto;
+            display: block;
+            background: white; /* White bg for perfect scanning */
+            padding: 10px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: #000; border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 12px; }
+        .nav-item { text-align: center; font-size: 12px; color: var(--muted); cursor: pointer; }
+        .nav-item.active { color: var(--accent); font-weight: bold; }
+
+        /* Errors */
+        #error-msg { color: #ff4d4d; font-size: 14px; margin-bottom: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">
+        <div class="logo">| DAMN</div>
+        <div class="icons">🎧 📈</div>
+    </div>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div id="page-login" class="page active">
+        <h2 style="text-align: center; margin-bottom: 10px;">Secure payments & earnings</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="toggleLoginTab(true)">Log In</div>
+            <div class="tab" onclick="toggleLoginTab(false)">Sign Up</div>
+        </div>
+        
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com" id="login-email">
+        
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password" id="login-pass">
+        
+        <button class="btn-main" onclick="validateLogin()">→ Log In</button>
+        <p style="text-align: center; color: var(--muted); margin-top: 20px;">Don't have an account? <span style="color: var(--accent); cursor: pointer;" onclick="toggleLoginTab(false)">Sign Up</span></p>
+        <p id="error-msg" style="text-align: center;">Please enter valid Email and Password (Min 6 characters)</p>
+    </div>
+
+    <!-- ==================== HOME PAGE ==================== -->
+    <div id="page-home" class="page">
+        <div class="card" style="background: linear-gradient(135deg, #ff6b00, #ff8c33); color: #000;">
+            <h3>Earn a flat 7% commission</h3>
+            <p style="font-size: 14px;">on all auto-processed transactions.</p>
+        </div>
+        
+        <div class="card">
+            <h3>Welcome, khatrafreefire</h3>
+            <div style="background: #252525; padding: 20px; border-radius: 8px; margin-top: 10px;">
+                <h2>₹ 0.00 INR</h2>
+                <p style="font-size: 12px; color: var(--muted);">Total Wallet Balance (7% Comm.)</p>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-main" onclick="openPage('page-deposit')">Deposit</button>
+                <button class="btn-main" style="background: #333; color: white;" onclick="openPage('page-withdraw')">Withdraw</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>Quick Actions</h4>
+            <button class="btn-main" onclick="openPage('page-sms')">SMS Forward</button>
+        </div>
+    </div>
+
+    <!-- ==================== DEPOSIT PAGE (QR + UTR 12 digits) ==================== -->
+    <div id="page-deposit" class="page">
+        <h2>Security Deposit</h2>
+        <div class="card">
+            <label>Enter Amount (₹ 2000)</label>
+            <input type="text" value="₹ 2000" readonly style="color: var(--accent); font-weight: bold;">
+            
+            <label>Payment QR (Scan with any UPI App)</label>
+            <img src="qr.png" class="qr-img" alt="QR Code">
+            <p style="text-align: center; font-size: 14px; color: var(--muted);">Scan the QR to pay instantly</p>
+
+            <label>UTR / Transaction ID (12 digits)</label>
+            <input type="text" id="utr-input" maxlength="12" placeholder="Enter 12-digit UTR" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <p id="error-msg">Invalid UTR! Sirf 12 digits daalein, warna page nahi khulega.</p>
+
+            <button class="btn-main" onclick="validateUTR()">✔ Submit Deposit</button>
+            <button class="btn-back" onclick="openPage('page-home')">← Back to Home</button>
+        </div>
+    </div>
+
+    <!-- ==================== WITHDRAW PAGE ==================== -->
+    <div id="page-withdraw" class="page">
+        <h2>Withdraw Funds</h2>
+        <div class="card" style="background: linear-gradient(135deg, #000, #1a1a1a); border: 1px solid var(--accent); color: white;">
+            <h3>Available Balance</h3>
+            <h2 style="color: var(--accent);">₹ 0.00</h2>
+        </div>
+        <label>Enter Amount</label>
+        <input type="text" placeholder="₹ 0">
+        <label>Withdraw To</label>
+        <button class="btn-main" style="background: #252525; color: var(--accent); border: 1px solid var(--accent);">🏠 Bank Account</button>
+        <button class="btn-main">Request Withdrawal</button>
+        <button class="btn-back" onclick="openPage('page-home')">← Back</button>
+    </div>
+
+    <!-- ==================== SMS FORWARD PAGE (10 digits validation) ==================== -->
+    <div id="page-sms" class="page">
+        <h2>SMS Forward</h2>
+        <div class="card">
+            <label>Registered Mobile Number (10 digits)</label>
+            <input type="text" id="mobile-input" maxlength="10" placeholder="Enter 10-digit mobile" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <p id="error-msg">Invalid Mobile! Sirf 10 digits daalein.</p>
+            <button class="btn-main" onclick="validateMobile()">✔ Save Settings</button>
+            <button class="btn-back" onclick="openPage('page-home')">← Back</button>
+        </div>
+    </div>
+
+    <!-- ==================== PROFILE PAGE ==================== -->
+    <div id="page-profile" class="page">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="width: 80px; height: 80px; background: var(--accent); color: #000; border-radius: 50%; font-size: 40px; line-height: 80px; margin: 0 auto; font-weight: 900;">K</div>
+            <h3>khatrafreefire@gmail.com</h3>
+            <p style="color: var(--accent); font-size: 12px;">✔ Verified Account</p>
+        </div>
+        <button class="btn-main" style="background: #ff4d4d; color: white;">Logout</button>
+        <button class="btn-back" onclick="openPage('page-home')">← Back to Home</button>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="openPage('page-home')">🏠<br>Home</div>
+        <div class="nav-item" onclick="alert('No transactions yet')">📄<br>Transactions</div>
+        <div class="nav-item" onclick="openPage('page-profile')">👤<br>Profile</div>
+    </div>
+</div>
+
+<script>
+    function openPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    function toggleLoginTab(isLogin) {
+        // Simple UI logic for Login/Signup
+        let tabs = document.querySelectorAll('.tab');
+        tabs[0].classList.toggle('active', isLogin);
+        tabs[1].classList.toggle('active', !isLogin);
+    }
+
+    function validateLogin() {
+        let email = document.getElementById('login-email').value;
+        let pass = document.getElementById('login-pass').value;
+        let error = document.getElementById('error-msg');
+
+        // Simple validation: Email valid + Password min 6 chars
+        if (email.includes('@') && email.includes('.') && pass.length >= 6) {
+            error.style.display = 'none';
+            openPage('page-home'); // Next page khulega
+        } else {
+            error.style.display = 'block';
+            return false;
+        }
+    }
+
+    function validateUTR() {
+        let utr = document.getElementById('utr-input').value;
+        let error = document.getElementById('error-msg');
+        
+        if (/^\d{12}$/.test(utr)) {
+            error.style.display = 'none';
+            alert("Details Correct! Deposit submitted.");
+            openPage('page-home');
+        } else {
+            error.style.display = 'block';
+            return false; // Block ho jayega
+        }
+    }
+
+    function validateMobile() {
+        let mobile = document.getElementById('mobile-input').value;
+        let error = document.getElementById('error-msg');
+        
+        if (/^\d{10}$/.test(mobile)) {
+            error.style.display = 'none';
+            alert("Details Correct! SMS Settings Saved.");
+            openPage('page-home');
+        } else {
+            error.style.display = 'block';
+            return false;
+        }
+    }
+</script>
+
+</body>
+</html>
